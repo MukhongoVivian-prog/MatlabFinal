@@ -16,7 +16,7 @@ def service(request):
 def doctors(request):
     return render(request, 'doctors.html')
 def department(request):
-    return render(request, 'department.html')
+    return render(request, 'departments.html')
 def appointments(request):
    if request.method == "POST":
        myappointment=Appointment(
@@ -29,10 +29,23 @@ def appointments(request):
                    message=request.POST['message'],
        )
        myappointment.save()
-       return redirect('/appointments')
+       return redirect('/show')
    else:
        return render(request,'appointments.html')
 def show(request):
     allappointments= Appointment.objects.all()
     return render(request,'show.html',{'appointments':allappointments})
+def delete(request, id):
+    appoint = Appointment.objects.get(id=id)
+    appoint.delete()
+    return redirect('show')
+def edit(request,id):
+    appoint = Appointment.objects.get(id=id)
+    appoint.edit()
+    return redirect('show')
+def pay(request,id):
+    appoint = Appointment.objects.get(id=id)
+    appoint.pay()
+    return redirect('show')
+
 

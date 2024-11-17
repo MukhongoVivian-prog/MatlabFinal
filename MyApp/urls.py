@@ -5,7 +5,7 @@ from MyApp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('index/', views.index, name='index'),
     path('services/', views.services, name='services'),
     path('starter/', views.starter, name='starter'),
     path('about/', views.about, name='about'),
@@ -14,6 +14,9 @@ urlpatterns = [
     path('departments/', views.department, name='departments'),
     path('appointments/', views.appointments, name='appointments'),
     path('show/', views.show, name='show'),
+    path('delete/<int:id>', views.delete),
+    path('edit/<int:id>', views.edit),
+    path('pay/<int:id>', views.pay),
 
 ]
 
