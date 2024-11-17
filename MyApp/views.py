@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from MyApp.models import Appointment
+from MyApp.models import Appointment, Contact
 
 # Create your views here.
 def index(request):
@@ -32,6 +32,18 @@ def appointments(request):
        return redirect('/show')
    else:
        return render(request,'appointments.html')
+def contact(request):
+    if request.method == "POST":
+        mycontacts = Contact(
+            name=request.POST['name'],
+            email=request.POST['email'],
+            subject=request.POST['subject'],
+            message=request.POST['message'],
+        )
+        mycontacts.save()
+        return redirect('/contacts')
+    else:
+        return render(request,'contact.html')
 def show(request):
     allappointments= Appointment.objects.all()
     return render(request,'show.html',{'appointments':allappointments})
@@ -39,6 +51,7 @@ def delete(request, id):
     appoint = Appointment.objects.get(id=id)
     appoint.delete()
     return redirect('show')
+
 def edit(request,id):
     appoint = Appointment.objects.get(id=id)
     appoint.edit()
@@ -48,4 +61,15 @@ def pay(request,id):
     appoint.pay()
     return redirect('show')
 
+def contacts(request):
+    allcontacts= Contact.objects.all()
+    return render(request,'contacts.html',{'contact':allcontacts})
+def DELETE(request, id):
+    cont = Contact.objects.all()
+    cont.DELETE()
+    return redirect('contacts')
+def EDIT(request,id):
+    cont = Contact.objects.all()
+    cont.EDIT()
+    return redirect('contacts')
 
