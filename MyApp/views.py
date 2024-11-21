@@ -1,9 +1,25 @@
 from django.shortcuts import render,redirect
-from MyApp.models import Appointment, Contact
+
+from MyApp.forms import AppointmentForm
+from MyApp.models import Appointment, Contact,Member
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    if request.method == 'POST':
+        if Member.objects.filter(
+                username=request.POST['username'],
+                password= request.POST['password'],
+        ).exists():
+            members =Member.objects.get(
+                username=request.POST['username'],
+                password=request.POST['password'],
+            )
+            return render(request, 'index.html',{'members':members})
+        else:
+            return render(request,'login.html')
+    else:
+        return render(request, 'login.html')
+
 
 def services(request):
     return render(request, 'service-details.html')
@@ -50,26 +66,29 @@ def show(request):
 def delete(request, id):
     appoint = Appointment.objects.get(id=id)
     appoint.delete()
-    return redirect('show')
+    return redirect('/show')
 
 def edit(request,id):
-    appoint = Appointment.objects.get(id=id)
-    appoint.edit()
-    return redirect('show')
-def pay(request,id):
-    appoint = Appointment.objects.get(id=id)
-    appoint.pay()
-    return redirect('show')
-
-def contacts(request):
-    allcontacts= Contact.objects.all()
-    return render(request,'contacts.html',{'contact':allcontacts})
-def DELETE(request, id):
-    cont = Contact.objects.all()
-    cont.DELETE()
-    return redirect('contacts')
-def EDIT(request,id):
-    cont = Contact.objects.all()
-    cont.EDIT()
-    return redirect('contacts')
-
+     editappointment=Appointment.objects.get(id=id)
+     return render(request,'edit.html',{'appointment':editappointment})
+def update(request,id):
+    updateinfo = Appointment.objects.get(id=id)
+    form = AppointmentForm(request.POST,instance=updateinfo)
+    if form.is_valid():
+        form.save()
+        return redirect('/show')
+    else:
+        return render(request,'edit.html')
+def register(request):
+    if request.method ==   "POST":
+        memberinfo=Member(
+            name = request.POST['name'],
+            username = request.POST['username'],
+            password = request.POST['password']
+        )
+        memberinfo.save()
+        return redirect('/login')
+    else:
+      return render(request,'register.html')
+def login(request):
+    return render(request,'login.html')
